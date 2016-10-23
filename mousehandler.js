@@ -31,7 +31,6 @@ class ClickHandler {
         const my = e.layerY;
         const node = findNode(mx, my);
         if (node) {
-            console.log('Node', node);
             this.nodeDown = {
                 offset: {
                     x: mx - node.bounds.x,

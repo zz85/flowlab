@@ -5,11 +5,12 @@ const BG = '#333';
 let topo = new Topo();
 let startNode = new BNode('start', topo);
 let nextNode = new BNode('next', topo);
+let anotherNode = new BNode('another', topo);
 let endnode = new BNode('end', topo);
 
 startNode.connectTo(nextNode);
+startNode.connectTo(anotherNode);
 nextNode.connectTo(endnode);
-
 
 topo.layout();
 
@@ -57,31 +58,38 @@ function drawConnection(from, to) {
 
 function drawBezier(from, to) {
     ctx.strokeStyle = 'orange';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
 
     const midx = from.x * 0.5 + to.x * 0.5;
     const midy = from.y * 0.5 + to.y * 0.5;
+    
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    
+    let x0, x1, y0, y1;
+    if (dx > dy) {
+        // for horizontal connections
+        x0 = midx; y0 = from.y;
+        x1 = midx; y1 = to.y;
+        // debugPoint(midx, from.y);
+        // debugPoint(midx, to.y);
+    }
+    else {
+        // for vertical connections
+        x0 = from.x; y0 = midy;
+        x1 = to.x; y1 = midy;
+        // debugPoint(from.x, midy);
+        // debugPoint(to.x, midy);
+    }
 
     ctx.beginPath()
     ctx.moveTo(from.x, from.y);
 
-    ctx.bezierCurveTo(
-        // for horizontal connections
-        midx, from.y,
-        midx, to.y,
-        // for vertical connections
-        // from.x, midy,
-        // to.x, midy,
+    ctx.bezierCurveTo(    
+        x0, y0,
+        x1, y1,
         to.x, to.y);
     ctx.stroke();
-
-    // for horizontal connections
-    debugPoint(midx, from.y);
-    debugPoint(midx, to.y);
-
-    // for vertical connections
-    // debugPoint(from.x, midy);
-    // debugPoint(to.x, midy);
 }
 
 function debugPoint(x, y) {
