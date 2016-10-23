@@ -6,11 +6,13 @@ let topo = new Topo();
 let startNode = new BNode('start', topo);
 let nextNode = new BNode('next', topo);
 let anotherNode = new BNode('another', topo);
+let yetAnotherNode = new BNode('yet another', topo);
 let endnode = new BNode('end', topo);
 
 startNode.connectTo(nextNode);
 startNode.connectTo(anotherNode);
 nextNode.connectTo(endnode);
+nextNode.connectTo(yetAnotherNode);
 
 topo.layout();
 
