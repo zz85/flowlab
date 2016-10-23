@@ -1,51 +1,5 @@
 const BG = '#333';
 
-// Biz Logic
-
-class Bounds {
-    constructor(x, y, w, h) {
-        return this.set(x, y, w, h);
-    }
-
-    set(x, y, w, h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        return this;
-    }
-}
-
-class BNode {
-  constructor(name, topo) {
-    this.name = name;
-    this.connections = new Set();
-    topo.add(this);
-    this.bounds = new Bounds();
-  }
-
-  connectTo(node) {
-    this.connections.add(node);
-  }
-}
-
-class Topo {
-  constructor() {
-    this.nodes = new Set();
-  }
-
-  add(node) {
-      this.nodes.add(node);
-  }
-
-  layout() {
-    var x = 0;
-    for (let node of this.nodes) {
-        x += 100;
-        node.bounds.set(x, 50, 60, 20);
-    }
-  }
-}
 
 //
 let topo = new Topo();
@@ -54,6 +8,8 @@ let nextNode = new BNode('next', topo);
 let endnode = new BNode('end', topo);
 
 startNode.connectTo(nextNode);
+nextNode.connectTo(endnode);
+
 
 topo.layout();
 
@@ -112,52 +68,9 @@ function animate() {
     setTimeout(animate, 30);
 }
 
+let click = new ClickHandler()
+
 animate();
-
-let nodeDown = null;
-
-document.body.addEventListener('mousedown', (e) => {
-  const mx = e.layerX;
-  const my = e.layerY;
-  const node = findNode(mx, my);
-  if (node) {
-      console.log('Node', node);
-    nodeDown = {
-        offset: {
-            x: mx - node.bounds.x,
-            y: my - node.bounds.y
-        },
-        node: node
-    }
-  }
-})
-
-document.body.addEventListener('mousemove', (e) => {
-  const mx = e.layerX;
-  const my = e.layerY;
-
-  if (nodeDown) {
-     const { node, offset } = nodeDown;
-     const { bounds } = node;
-     bounds.x = mx - offset.x;
-     bounds.y = my - offset.y;
-  }
-  else {
-      const node = findNode(mx, my);
-      if (node) {
-          canvas.style.cursor = 'pointer';
-      }
-      else {
-          canvas.style.cursor = 'auto';
-      }
-  }
-})
-
-document.body.addEventListener('mouseup', (e) => {
-  nodeDown = null;
-})
-
-
 
 function findNode(mx, my) {
     for (let node of topo.nodes) {
