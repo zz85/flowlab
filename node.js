@@ -45,7 +45,8 @@ function render(topo) {
 function drawConnection(from, to) {
     from = from.bounds;
     to = to.bounds;
-    drawLine({
+    // drawLine
+    drawBezier({
         x: from.x + from.w / 2,
         y: from.y + from.h / 2,
     }, {
@@ -53,6 +54,43 @@ function drawConnection(from, to) {
         y: to.y + to.h / 2,
     });
 }
+
+function drawBezier(from, to) {
+    ctx.strokeStyle = 'orange';
+    ctx.lineWidth = 2;
+
+    const midx = from.x * 0.5 + to.x * 0.5;
+    const midy = from.y * 0.5 + to.y * 0.5;
+
+    ctx.beginPath()
+    ctx.moveTo(from.x, from.y);
+
+    ctx.bezierCurveTo(
+        // for horizontal connections
+        midx, from.y,
+        midx, to.y,
+        // for vertical connections
+        // from.x, midy,
+        // to.x, midy,
+        to.x, to.y);
+    ctx.stroke();
+
+    // for horizontal connections
+    debugPoint(midx, from.y);
+    debugPoint(midx, to.y);
+
+    // for vertical connections
+    // debugPoint(from.x, midy);
+    // debugPoint(to.x, midy);
+}
+
+function debugPoint(x, y) {
+    ctx.fillStyle = 'pink'
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fill();
+}
+
 
 function drawLine(from, to) {
     ctx.strokeStyle = 'orange';
