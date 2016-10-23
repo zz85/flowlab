@@ -33,7 +33,7 @@ class Topo {
   add(node) {
       this.nodes.add(node);
   }
-  
+
   // adjust the positions of the node
   layout() {
     //   this.simple_layout();
@@ -49,28 +49,40 @@ class Topo {
         x += 200;
     }
   }
-  
+
   graph_layout() {
       let visited = new Set();
-      let x = 100;
-      let y = 50;
-      
-
       let i = 0;
 
-    //   const grid = new Array2D(); 
       const col_last = [];
-      
+
       for (let node of this.nodes) {
           traverseNode(node, visited, i, col_last);
       }
   }
-  
+
   // TODO viz graph or some other kind of layouts
-  
-  // saves topo to some serailzable json form 
+
+  // saves topo to some serailzable json form
   serialize() {
-      
+      const list = [];
+      const uuid = new Map();
+      let i = 0;
+      for (var node of this.nodes) {
+          uuid.set(node, Date.now() + '-' + i);
+          i++;
+      }
+
+      for (var node of this.nodes) {
+          const {
+              name, bounds, connections
+            } = node;
+            const c = Array.from(connections).map(c => uuid.get(c));
+          list.push({
+              name, bounds, connections: c, uuid: uuid.get(node)
+          });
+      }
+      return list;
   }
 }
 
@@ -80,13 +92,11 @@ function traverseNode(node, visited, i, col_last) {
     if (visited.has(node)) return;
     visited.add(node);
     if (col_last[i]) {
-        col_last[i]++ 
+        col_last[i]++
     }
     else {
         col_last[i] = 1;
-    } 
-
-    console.log(i, col_last[i]);
+    }
 
     const x = 50 + i * 200;
     const y = 50 + col_last[i] * 100;
@@ -100,24 +110,36 @@ function traverseNode(node, visited, i, col_last) {
     }
 }
 
+function saveLayout() {
+    localStorage.layout = JSON.stringify(topo.serialize());
+}
 
-// class Array2D {
-//     constructor() {
-//         this.values = [];
-//     }
-    
-//     set(x, y, value) {
-//         if (!this.values[y]) this.values[y] = [];
-//         this.values[y][x] = value;
-//     }
-    
-//     get(x, y) {
-//         if (this.values[y]) return this.values[y][x];
-//         return;
-//     }
-    
-//     nextAvailableSpace(node) {
-        
-//     }
-    
-// }
+function loadLayout(topo) {
+    try {
+        const json = JSON.parse(localStorage.layout);
+        const uuid = new Map();
+
+        topo.nodes = new Set();
+
+        json.forEach(j => {
+            console.log(j);
+            const node = new BNode(j.name, topo);
+            node.bounds = j.bounds;
+            uuid.set(j.uuid, node);
+        });
+
+        json.forEach(j => {
+            const node = uuid.get(j.uuid)
+            j.connections.map(id => uuid.get(id)).forEach(n => {
+                node.connections.add(n);
+            })
+        });
+
+        // for (let [id, node] of uuid) {
+        //   top.
+        // } 
+    }
+    catch (e) {
+        console.log('Cannot load localstorage json', e.stack);
+    }
+}

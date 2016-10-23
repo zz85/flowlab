@@ -9,7 +9,10 @@ let anotherNode = new BNode('another', topo);
 let yetAnotherNode = new BNode('yet another', topo);
 let endnode = new BNode('end', topo);
 
+new BNode('new', topo);
+
 startNode.connectTo(nextNode);
+startNode.connectTo(new BNode('meow', topo));
 startNode.connectTo(anotherNode);
 nextNode.connectTo(endnode);
 nextNode.connectTo(yetAnotherNode);
@@ -61,15 +64,16 @@ function drawConnection(from, to) {
 function drawBezier(from, to) {
     ctx.strokeStyle = 'orange';
     ctx.lineWidth = 4;
+    const OVERRIDE = true;
 
     const midx = from.x * 0.5 + to.x * 0.5;
     const midy = from.y * 0.5 + to.y * 0.5;
-    
+
     const dx = to.x - from.x;
     const dy = to.y - from.y;
-    
+
     let x0, x1, y0, y1;
-    if (dx > dy) {
+    if (OVERRIDE || dx > dy) {
         // for horizontal connections
         x0 = midx; y0 = from.y;
         x1 = midx; y1 = to.y;
@@ -87,7 +91,7 @@ function drawBezier(from, to) {
     ctx.beginPath()
     ctx.moveTo(from.x, from.y);
 
-    ctx.bezierCurveTo(    
+    ctx.bezierCurveTo(
         x0, y0,
         x1, y1,
         to.x, to.y);
