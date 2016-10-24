@@ -1,6 +1,5 @@
 const BG = '#333';
 
-
 //
 let topo = new Topo();
 let startNode = new BNode('start', topo);
@@ -12,7 +11,7 @@ let endnode = new BNode('end', topo);
 new BNode('new', topo);
 
 startNode.connectTo(nextNode);
-startNode.connectTo(new BNode('meow', topo));
+startNode.connectTo(new BNode('meow', topo).connectTo(new BNode('gooodi', topo).connectTo(new BNode('ohohoh', topo))));
 startNode.connectTo(anotherNode);
 nextNode.connectTo(endnode);
 nextNode.connectTo(yetAnotherNode);
@@ -51,6 +50,7 @@ function render(topo) {
 function drawConnection(from, to) {
     from = from.bounds;
     to = to.bounds;
+
     // drawLine
     drawBezier({
         x: from.x + from.w / 2,
@@ -105,7 +105,6 @@ function debugPoint(x, y) {
     ctx.fill();
 }
 
-
 function drawLine(from, to) {
     ctx.strokeStyle = 'orange';
     ctx.lineWidth = 2;
@@ -117,7 +116,7 @@ function drawLine(from, to) {
 
 function animate() {
     render(topo);
-    setTimeout(animate, 30);
+    requestAnimationFrame(animate, 30);
 }
 
 let click = new ClickHandler()

@@ -1,10 +1,8 @@
-class ClickHandler {
+class EHandler {
     constructor() {
-        this.nodeDown = null;
         this.handles = {};
-        this.handle();
     }
-    
+
     bind(k, f) {
         this.handles[k] = f.bind(this);
         document.body.addEventListener(k, this.handles[k]);
@@ -12,6 +10,14 @@ class ClickHandler {
     
     unbind(k) {
         document.body.removeEventListener(k, this.handles[k]);
+    }
+}
+
+class ClickHandler extends EHandler {
+    constructor() {
+        super();
+        this.nodeDown = null;
+        this.handle();
     }
     
     handle() {

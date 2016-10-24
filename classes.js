@@ -22,6 +22,7 @@ class BNode {
 
   connectTo(node) {
     this.connections.add(node);
+    return this;
   }
 }
 
@@ -134,10 +135,6 @@ function loadLayout(topo) {
                 node.connections.add(n);
             })
         });
-
-        // for (let [id, node] of uuid) {
-        //   top.
-        // } 
     }
     catch (e) {
         console.log('Cannot load localstorage json', e.stack);
